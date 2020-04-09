@@ -17,7 +17,7 @@ class Mydriver:
             elif os.path.exists("/opt/google/chrome/chrome"):  # linux
                 self.options.binary_location = "/opt/google/chrome/chrome"
             if noimg:
-                self.options.add_argument('blink-settings=imagesEnabled=true')  # 不加载图片, 提升速度，但无法显示二维码
+                self.options.add_argument('blink-settings=imagesEnabled=true')  # 显示二维码
             if nohead:
                 self.options.add_argument('--headless')
                 self.options.add_argument('--disable-extensions')
@@ -64,14 +64,14 @@ class Mydriver:
             self.driver.execute_script('arguments[0].remove()', remover)
         try:
             remover = WebDriverWait(self.driver, 30, 0.2).until(
-                lambda driver: driver.find_element_by_class_name("header"))
+                lambda driver: driver.find_element_by_class_name("layout-header"))
         except exceptions.TimeoutException:
             print("当前网络缓慢...")
         else:
             self.driver.execute_script('arguments[0].remove()', remover)
         try:
             remover = WebDriverWait(self.driver, 30, 0.2).until(
-                lambda driver: driver.find_element_by_class_name("footer"))
+                lambda driver: driver.find_element_by_class_name("layout-footer"))
         except exceptions.TimeoutException:
             print("当前网络缓慢...")
         else:
@@ -80,6 +80,7 @@ class Mydriver:
         try:
             WebDriverWait(self.driver, 270).until(EC.title_is(u"我的学习"))
             cookies = self.get_cookies()
+            self.driver.quit()
             return cookies
         except:
             print("扫描二维码超时")
